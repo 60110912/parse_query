@@ -1,0 +1,43 @@
+explain_objects:
+  query_id: uuid # Генерируется при разборе запроса
+  - schema: test
+    table: test_table
+    fields:
+      - field: a
+        filters:
+        - filter: a < 100
+          values:
+          - type: numrange
+            ranges: (,100)
+
+      - field: b
+        filters:
+        - filter: b = 'test'
+          values:
+            - type: text
+              value: test
+      - field: c
+        filters:
+        - filter: c in (150, 160) # c =  ANY ('{150,160}'::integer[])
+          values:
+            - type: numrange
+              value: [150,150]
+            - type: numrange
+              value: [160,160]
+      - field: d
+        filters:
+        - filter: d IS NULL
+          values:
+              value: IS NULL
+      - field: e
+          filters:
+          - filter: e > '2001-01-01'::date and e  < '2002-01-01'::date # Парсится как два условия
+            values:
+            - type: tsrange
+              value: ('2001-01-01', '2002-01-01')
+          - filter: e between  '2001-01-01'::date and '2002-01-01'::date # (**.e >= '2001-01-01'::date) AND (**.e <= '2002-01-01'::date)
+            values:
+              - type: tsrange
+                value: ['2001-01-01', '2002-01-01']
+          - filter: e <> '2001-01-01'::date #Для этого делать не надо
+            values: []

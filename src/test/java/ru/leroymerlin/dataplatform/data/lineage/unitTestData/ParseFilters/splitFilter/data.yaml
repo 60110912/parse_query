@@ -1,0 +1,23 @@
+testName: splitFilters
+splitFilters:
+  - filter: ((opened_date > '2020-01-01'::date) AND (opened_date <= '2020-03-01'::date))
+    ansver:
+      - opened_date > '2020-01-01'::date
+      - opened_date <= '2020-03-01'::date
+  - filter: (t_scd4_table_list.table_name = 'workstation'::text)
+    ansver:
+      - t_scd4_table_list.table_name = 'workstation'::text
+  - filter: (t_scd4_source_list.source_name = ANY ('{\"TP.NET 27\",\"TP.NET 28\"}'::text[]))
+    ansver:
+      - t_scd4_source_list.source_name = ANY ('{\"TP.NET 27\",\"TP.NET 28\"}'::text[])
+  - filter: (t.typname IS NOT NULL)
+    ansver:
+      - t.typname IS NOT NULL
+  - filter: ((c.relkind IS NULL) OR (c.relkind = 'c'::"char"))
+    ansver:
+      - c.relkind IS NULL
+      - c.relkind = 'c'::"char"
+  - filter: ((c.relkind IN(1,2)) OR (c.relkind = 'c'::"char"))
+    ansver:
+      - c.relkind IN(1,2)
+      - c.relkind = 'c'::"char"

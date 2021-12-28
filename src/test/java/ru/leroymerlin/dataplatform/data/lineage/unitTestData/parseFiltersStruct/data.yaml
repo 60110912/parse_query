@@ -1,0 +1,42 @@
+testName: parceFiltersValue
+filtersValue:
+  - filter: opened_date > 20110101::text
+    ansver:
+        field: "opened_date"
+        operator: ">"
+        values: "20110101::text"
+  - filter: opened_date <= '2020-03-01'::date
+    ansver:
+        field: opened_date
+        operator: "<="
+        values: "'2020-03-01'::date"
+  - filter: t_scd4_table_list.table_name  = 'workstation'::text
+    ansver:
+        field: table_name
+        table: t_scd4_table_list
+        operator: "="
+        values: "'workstation'::text"
+  - filter: t_scd4_source_list.source_name = ANY ('{\"TP.NET 27\",\"TP.NET 28\"}'::text[])
+    ansver:
+       field: source_name
+       table: t_scd4_source_list
+       operator: =
+       values: "ANY ('{\\\"TP.NET 27\\\",\\\"TP.NET 28\\\"}'::text[])"
+  - filter: t.typname IS NOT NULL
+    ansver:
+        field: typname
+        table: t
+        operator: IS
+        values: NOT NULL
+  - filter: c.relkind IS NULL
+    ansver:
+        field: relkind
+        table: c
+        operator: IS
+        values: "NULL"
+  - filter: c.relkind = 'c'::"char"
+    ansver:
+        field: relkind
+        table: c
+        operator: =
+        values: "'c'::\"char\""
