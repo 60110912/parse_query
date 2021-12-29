@@ -1,0 +1,16 @@
+testName: getValueType
+valueType:
+  - value: 20110101::text
+    ansver: text
+  - value: "'2020-03-01'::date"
+    ansver: tsrange
+  - value:  "'workstation'::text"
+    ansver: text
+  - value: ANY ('{150,160}'::integer[])
+    ansver: numrange
+  - value: ANY ('{150,160}'::Double[])
+    ansver: numrange
+  - value: ANY ('{150,160}'::Numeric)
+    ansver: numrange
+  - value: "'2020-03-01'::Timestamp"
+    ansver: tsrange

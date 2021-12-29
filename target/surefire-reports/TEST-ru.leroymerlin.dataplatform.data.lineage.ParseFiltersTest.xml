@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="2" failures="0" name="ru.leroymerlin.dataplatform.data.lineage.ParseFiltersTest" time="0.372" errors="0" skipped="0">
+<testsuite tests="4" failures="0" name="ru.leroymerlin.dataplatform.data.lineage.ParseFiltersTest" time="0.381" errors="0" skipped="0">
   <properties>
     <property name="idea.version" value="2021.2.3"/>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
@@ -60,6 +60,8 @@
     <property name="sun.cpu.endian" value="little"/>
     <property name="sun.cpu.isalist" value="amd64"/>
   </properties>
-  <testcase classname="ru.leroymerlin.dataplatform.data.lineage.ParseFiltersTest" name="testSplitFilters" time="0.341"/>
-  <testcase classname="ru.leroymerlin.dataplatform.data.lineage.ParseFiltersTest" name="testParseFiltersStruct" time="0.031"/>
+  <testcase classname="ru.leroymerlin.dataplatform.data.lineage.ParseFiltersTest" name="testGetAnyList" time="0.307"/>
+  <testcase classname="ru.leroymerlin.dataplatform.data.lineage.ParseFiltersTest" name="testSplitFilters" time="0.049"/>
+  <testcase classname="ru.leroymerlin.dataplatform.data.lineage.ParseFiltersTest" name="testGetValueType" time="0.004"/>
+  <testcase classname="ru.leroymerlin.dataplatform.data.lineage.ParseFiltersTest" name="testParseFiltersStruct" time="0.021"/>
 </testsuite>

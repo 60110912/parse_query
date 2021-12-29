@@ -67,11 +67,13 @@ public class ParseFiltersTest {
     public void testParseFiltersStruct() throws Exception {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         mapper.findAndRegisterModules();
-        Map readValue = mapper.readValue(new File("src/test/java/ru/leroymerlin/dataplatform/data/lineage/unitTestData/parseFiltersStruct/data.yaml"), Map.class);
+        Map readValue = mapper.readValue(
+                new File("src/test/java/ru/leroymerlin/dataplatform/data/lineage/unitTestData/ParseFilters/parseFiltersStruct/data.yaml"),
+                Map.class
+        );
         List<HashMap<String, Object>> testUnit = (List<HashMap<String, Object>>) readValue.get("filtersValue");
-        for (var elem : testUnit) {
+        for (HashMap<String, Object> elem : testUnit) {
             logger.logp(Level.INFO, this.getClass().getCanonicalName(), "testParseFiltersStruct", "Start for:"+ elem.toString());
-            //System.out.println(elem.get("filter").toString());
             HashMap<String, String> methodAnswers =
                     new ParseFilters()
                             .parseFiltersStruct(elem.get("filter").toString());
@@ -83,5 +85,44 @@ public class ParseFiltersTest {
 
         }
     }
+    @Test
+    public void testGetValueType() throws IOException {
+        logger.logp(Level.INFO, this.getClass().getCanonicalName(), "testGetValueType", "Start testGetValueType");
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        mapper.findAndRegisterModules();
+        Map readValue = mapper.readValue(
+                new File("src/test/java/ru/leroymerlin/dataplatform/data/lineage/unitTestData/ParseFilters/getValueType/data.yaml"),
+                Map.class
+        );
+        List<HashMap<String, String>> testUnit = (List<HashMap<String, String>>) readValue.get("valueType");
+        testUnit.forEach(n ->  assertEquals(
+                n.get("ansver"),
+                ParseFilters.getValueType(n.get("value"))
+                )
+        );
+        }
+    @Test
+    public void testGetAnyList() throws IOException {
+        logger.logp(Level.INFO, this.getClass().getCanonicalName(), "testGetAnyList", "Start testGetValueType");
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        mapper.findAndRegisterModules();
+        Map readValue = mapper.readValue(
+                new File("src/test/java/ru/leroymerlin/dataplatform/data/lineage/unitTestData/ParseFilters/getAnyList/data.yaml"),
+                Map.class
+        );
+        List<HashMap<String, Object>> testUnit = (List<HashMap<String, Object>>) readValue.get("anyList");
+        for (HashMap<String, Object> elem : testUnit) {
+            logger.logp(Level.INFO, this.getClass().getCanonicalName(), "testGetAnyList", "Start for:"+ elem.toString());
+            List<String> methodAnswers = ParseFilters.getAnyList(
+                    elem.get("value").toString()
+            );
+            logger.logp(Level.INFO, this.getClass().getCanonicalName(), "testGetAnyList", "Function ansver:"+methodAnswers.toString());
+            logger.logp(Level.INFO, this.getClass().getCanonicalName(), "testGetAnyList", "Yaml ansver:"+ ((List<String>) elem.get("ansver")).toString());
+            boolean testResult = methodAnswers.containsAll((List<String>)elem.get("ansver"));
+            logger.logp(Level.INFO, this.getClass().getCanonicalName(), "testGetAnyList", "Result test:" + testResult);
+            assertTrue(testResult);
 
+        }
+
+    }
 }

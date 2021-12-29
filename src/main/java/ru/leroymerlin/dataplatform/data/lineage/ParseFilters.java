@@ -1,9 +1,6 @@
 package ru.leroymerlin.dataplatform.data.lineage;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -55,12 +52,12 @@ public class ParseFilters {
     }
 
     /**
-     * Медод удалает лишние скобки в начале и в конце.
+     * Медод удалает лишние круглые скобки  в начале и в конце.
      *
      * @param str входная строка
+     * @return str выходная строка без круглых скобок в начале и в конце.
      */
     public static String unBracket(String str) {
-
         Pattern pattern = Pattern.compile("^\\((.*)\\)$");
         Matcher matcher = pattern.matcher(str);
         while (matcher.find()) {
@@ -69,20 +66,68 @@ public class ParseFilters {
         return str;
     }
 
-    public HashMap<String, String> getFiltersValue() {
+    /**
+     * Медод удалает лишние круглые скобки  в начале и в конце.
+     *
+     * @param str входная строка
+     * @return str выходная строка без круглых скобок в начале и в конце.
+     */
+    public static String unBracket(String str, String left, String rigth) {
+        String regexp = "^" + left + "(.*)" +  rigth + "$";
+        Pattern pattern = Pattern.compile(regexp);
+        Matcher matcher = pattern.matcher(str);
+        while (matcher.find()) {
+            return matcher.group(1);
+        }
+        return str;
+    }
+
+    public FilterValues getFiltersValue() {
         List<String> filters = this.splitFilters();
-        HashMap<String, String> result = new HashMap<>();
-        for (String s : filters) {
-            HashMap<String, String> valuesMap = parseFiltersStruct(s);
+        List<DBTable> resultTables = new LinkedList<>();
+        for (String filter : filters) {
+            HashMap<String, String> valuesMap = parseFiltersStruct(filter);
+            FieldsFilter fieldsFilter = new FieldsFilter();
             logger.logp(
                     Level.INFO,
                     this.getClass().getCanonicalName(),
                     "unBracket",
                     "This add to filter list" + valuesMap.toString()
             );
+
+            String valuesString = valuesMap.get("values");
+            String valueType = ParseFilters.getValueType(valuesString);
+
+            fieldsFilter.setFilter(filter);
+            if (valuesString.matches("\\WANY\\W")){
+                List<String> resAnyList = ParseFilters.getAnyList(valueType);
+                for (String item: resAnyList){
+                    String clearValue = new String();
+                    if (valueType == "text") {
+                        clearValue = ParseFilters.unBracket(item, "\'", "\'");
+                    }
+                    else {
+                        clearValue = item;
+                    }
+                    FilterValues valuesFilter = new FilterValues(valueType, clearValue);
+                    fieldsFilter.addFilterValue(valuesFilter);
+                }
+            }
+            else {
+                String clearValue = new String();
+                if (valueType == "text") {
+                    clearValue = ParseFilters.unBracket(valuesString, "\'", "\'");
+                }
+                else {
+                    clearValue = valuesString;
+                }
+                FilterValues valuesFilter = new FilterValues(valueType, clearValue);
+                fieldsFilter.addFilterValue(valuesFilter);
+            }
         }
-        return null;
+        return fieldsFilter;
     }
+
 
     /**
      * Function get alias, fieid, operator and value from filters.
@@ -103,7 +148,7 @@ public class ParseFilters {
         regList.add("^\\W*(?<field>\\w+)\\W*?(?<operator>[<>=!]+|IS)\\W(?<values>.*)$");
 
         for (String s : regList) {
-            Pattern pattern = Pattern.compile(s);
+            Pattern pattern = Pattern.compile(s, Pattern.CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(str);
             while (matcher.find()) {
                 logger.logp(
@@ -129,5 +174,35 @@ public class ParseFilters {
             }
         }
         return result;
+    }
+
+    /**
+     * Function get value type from filter clause.
+     * @param str - filter string
+     * @return String type for pg rangetypes. https://postgrespro.ru/docs/postgrespro/9.5/rangetypes
+     */
+    public static String getValueType(String str){
+        String valueType = "text";
+        if (Pattern.compile("::int|::numeric|::double", Pattern.CASE_INSENSITIVE)
+                .matcher(str)
+                .find()) {
+            return "numrange";
+        }
+        if (Pattern.compile("::date|::time", Pattern.CASE_INSENSITIVE)
+                .matcher(str)
+                .find()){
+           return  "tsrange";
+        }
+        return valueType;
+    }
+    public static List<String> getAnyList(String str){
+        String regStr = "\\\'\\{(.*)\\}\\\'";
+        Pattern pattern = Pattern.compile(regStr, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(str);
+        while (matcher.find()) {
+            List<String> result = Arrays.asList(matcher.group(1).split(",\\s*"));
+            return result;
+        }
+        return null;
     }
 }

@@ -28,13 +28,15 @@ explain_objects:
         filters:
         - filter: d IS NULL
           values:
-              value: IS NULL
+              value: NULL
       - field: e
           filters:
           - filter: e > '2001-01-01'::date and e  < '2002-01-01'::date # Парсится как два условия
             values:
             - type: tsrange
-              value: ('2001-01-01', '2002-01-01')
+              value: ('2001-01-01'::date,)
+           - type: tsrange
+             value: (,'2002-01-01'::date)
           - filter: e between  '2001-01-01'::date and '2002-01-01'::date # (**.e >= '2001-01-01'::date) AND (**.e <= '2002-01-01'::date)
             values:
               - type: tsrange
