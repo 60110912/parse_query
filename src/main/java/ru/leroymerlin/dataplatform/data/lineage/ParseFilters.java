@@ -82,25 +82,44 @@ public class ParseFilters {
         return str;
     }
 
-    public FilterValues getFiltersValue() {
+    public List<FiltersStruct> getFiltersValue() {
         List<String> filters = this.splitFilters();
-        List<DBTable> resultTables = new LinkedList<>();
+        List<FiltersStruct> result = new <FiltersStruct>LinkedList();
         for (String filter : filters) {
             HashMap<String, String> valuesMap = parseFiltersStruct(filter);
-            FieldsFilter fieldsFilter = new FieldsFilter();
+            FiltersStruct fieldsFilter = new FiltersStruct();
             logger.logp(
                     Level.INFO,
                     this.getClass().getCanonicalName(),
-                    "unBracket",
-                    "This add to filter list" + valuesMap.toString()
+                    "getFiltersValue",
+                    "This valuesMap " + valuesMap.toString()
             );
 
             String valuesString = valuesMap.get("values");
+            logger.logp(
+                    Level.INFO,
+                    this.getClass().getCanonicalName(),
+                    "getFiltersValue",
+                    "This valuesMap " + valuesMap.toString()
+            );
             String valueType = ParseFilters.getValueType(valuesString);
-
             fieldsFilter.setFilter(filter);
-            if (valuesString.matches("\\WANY\\W")){
-                List<String> resAnyList = ParseFilters.getAnyList(valueType);
+            Pattern pattern = Pattern.compile("^ANY\\W", Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher(valuesString);
+            if (matcher.find()){
+                logger.logp(
+                        Level.INFO,
+                        this.getClass().getCanonicalName(),
+                        "getFiltersValue",
+                        "Match Any"
+                );
+                List<String> resAnyList = ParseFilters.getAnyList(valuesString);
+                logger.logp(
+                        Level.INFO,
+                        this.getClass().getCanonicalName(),
+                        "getFiltersValue",
+                        "resAnyList" + resAnyList.toString()
+                );
                 for (String item: resAnyList){
                     String clearValue = new String();
                     if (valueType == "text") {
@@ -109,8 +128,7 @@ public class ParseFilters {
                     else {
                         clearValue = item;
                     }
-                    FilterValues valuesFilter = new FilterValues(valueType, clearValue);
-                    fieldsFilter.addFilterValue(valuesFilter);
+                    fieldsFilter.addFilterValues(clearValue);
                 }
             }
             else {
@@ -121,11 +139,15 @@ public class ParseFilters {
                 else {
                     clearValue = valuesString;
                 }
-                FilterValues valuesFilter = new FilterValues(valueType, clearValue);
-                fieldsFilter.addFilterValue(valuesFilter);
+                fieldsFilter.addFilterValues(clearValue);
+
             }
+            fieldsFilter.setType(valueType);
+            fieldsFilter.setValuesFromHashmap(valuesMap);
+            result.add(fieldsFilter);
         }
-        return fieldsFilter;
+
+        return result;
     }
 
 
@@ -185,6 +207,11 @@ public class ParseFilters {
         String valueType = "text";
         if (Pattern.compile("::int|::numeric|::double", Pattern.CASE_INSENSITIVE)
                 .matcher(str)
+                .find()) {
+            return "numrange";
+        }
+        if (Pattern.compile("^\\d*$")
+                .matcher(str.trim())
                 .find()) {
             return "numrange";
         }

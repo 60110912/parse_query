@@ -14,3 +14,5 @@ valueType:
     ansver: numrange
   - value: "'2020-03-01'::Timestamp"
     ansver: tsrange
+  - value: "150"
+    ansver: numrange
