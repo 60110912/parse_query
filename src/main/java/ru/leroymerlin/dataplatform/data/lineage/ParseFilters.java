@@ -27,7 +27,7 @@ public class ParseFilters {
     }
 
     /**
-     * Function split filter line to some condition. Split filter equals operator AND or OR.
+     * Function split filter line to some condition. Split filter equals operator "AND" or "OR".
      * https://crate.io/docs/sql-99/en/latest/chapters/29.html#from-clause
      *
      * @return List filter conditions.
@@ -60,7 +60,7 @@ public class ParseFilters {
     public static String unBracket(String str) {
         Pattern pattern = Pattern.compile("^\\((.*)\\)$");
         Matcher matcher = pattern.matcher(str);
-        while (matcher.find()) {
+        if (matcher.find()) {
             return matcher.group(1);
         }
         return str;
@@ -72,16 +72,20 @@ public class ParseFilters {
      * @param str входная строка
      * @return str выходная строка без круглых скобок в начале и в конце.
      */
-    public static String unBracket(String str, String left, String rigth) {
-        String regexp = "^" + left + "(.*)" +  rigth + "$";
+    public static String unBracket(String str, String left, String right) {
+        String regexp = "^" + left + "(.*)" +  right + "$";
         Pattern pattern = Pattern.compile(regexp);
         Matcher matcher = pattern.matcher(str);
-        while (matcher.find()) {
+        if (matcher.find()) {
             return matcher.group(1);
         }
         return str;
     }
 
+    /**
+     * Method return all filter value for next analise in PG.
+     * @return List FiltersStruct.
+     */
     public List<FiltersStruct> getFiltersValue() {
         List<String> filters = this.splitFilters();
         List<FiltersStruct> result = new <FiltersStruct>LinkedList();
@@ -92,7 +96,7 @@ public class ParseFilters {
                     Level.INFO,
                     this.getClass().getCanonicalName(),
                     "getFiltersValue",
-                    "This valuesMap " + valuesMap.toString()
+                    "This valuesMap " + valuesMap
             );
 
             String valuesString = valuesMap.get("values");
@@ -100,7 +104,7 @@ public class ParseFilters {
                     Level.INFO,
                     this.getClass().getCanonicalName(),
                     "getFiltersValue",
-                    "This valuesMap " + valuesMap.toString()
+                    "This valuesMap " + valuesMap
             );
             String valueType = ParseFilters.getValueType(valuesString);
             fieldsFilter.setFilter(filter);
@@ -118,11 +122,11 @@ public class ParseFilters {
                         Level.INFO,
                         this.getClass().getCanonicalName(),
                         "getFiltersValue",
-                        "resAnyList" + resAnyList.toString()
+                        "resAnyList" + resAnyList
                 );
                 for (String item: resAnyList){
-                    String clearValue = new String();
-                    if (valueType == "text") {
+                    String clearValue;
+                    if (valueType.equals("text")) {
                         clearValue = ParseFilters.unBracket(item, "\'", "\'");
                     }
                     else {
@@ -132,8 +136,8 @@ public class ParseFilters {
                 }
             }
             else {
-                String clearValue = new String();
-                if (valueType == "text") {
+                String clearValue;
+                if (valueType.equals("text")) {
                     clearValue = ParseFilters.unBracket(valuesString, "\'", "\'");
                 }
                 else {
@@ -152,9 +156,9 @@ public class ParseFilters {
 
 
     /**
-     * Function get alias, fieid, operator and value from filters.
+     * Function get alias, field, operator and value from filters.
      *
-     * @param str One of filter statment.
+     * @param str One of filter statement.
      * @return Map like json struct
      * {"field": "field_value",
      * "table": "table_value",
@@ -177,17 +181,17 @@ public class ParseFilters {
         for (String s : regList) {
             Pattern pattern = Pattern.compile(s, Pattern.CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(str);
-            while (matcher.find()) {
+            if (matcher.find()) {
                 logger.logp(
                         Level.INFO,
                         this.getClass().getCanonicalName(),
                         "parseFiltersStruct",
-                        "Matcher" + matcher.toString()
+                        "Matcher" + matcher
                 );
                 result.put("field", matcher.group("field").trim());
                 if (matcher.groupCount() == 4) {
                     result.put("table", matcher.group("table").trim());
-                };
+                }
 
                 result.put("operator", matcher.group("operator").trim());
                 result.put("values", matcher.group("values").trim());
@@ -195,7 +199,7 @@ public class ParseFilters {
                         Level.INFO,
                         this.getClass().getCanonicalName(),
                         "parseFiltersStruct",
-                        "Return list" + result.toString()
+                        "Return list" + result
                 );
                 return result;
             }
@@ -237,9 +241,8 @@ public class ParseFilters {
         String regStr = "\\\'\\{(.*)\\}\\\'";
         Pattern pattern = Pattern.compile(regStr, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(str);
-        while (matcher.find()) {
-            List<String> result = Arrays.asList(matcher.group(1).split(",\\s*"));
-            return result;
+        if (matcher.find()) {
+            return Arrays.asList(matcher.group(1).split(",\\s*"));
         }
         return null;
     }
@@ -252,7 +255,7 @@ public class ParseFilters {
         for (String s : regList) {
             Pattern pattern = Pattern.compile(s);
             Matcher matcher = pattern.matcher(str);
-            while (matcher.find()) {
+            if (matcher.find()) {
                 return matcher.group("value");
             }
         }
