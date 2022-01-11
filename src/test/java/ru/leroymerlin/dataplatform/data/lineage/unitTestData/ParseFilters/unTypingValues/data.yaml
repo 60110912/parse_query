@@ -1,0 +1,8 @@
+testName: unTypingValues
+valueUnType:
+  - value: 20110101::text
+    answer: "20110101"
+  - value: "'2020-03-01'::date"
+    answer: "2020-03-01"
+  - value:  "'workstation'::text"
+    answer: workstation

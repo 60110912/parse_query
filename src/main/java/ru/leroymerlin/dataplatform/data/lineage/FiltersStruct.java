@@ -3,6 +3,7 @@ package ru.leroymerlin.dataplatform.data.lineage;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 public class FiltersStruct {
 
@@ -87,6 +88,38 @@ public class FiltersStruct {
             this.table = null;
         }
         this.operator = elem.get("operator").toString();
+    }
+    public FiltersStruct(HashMap elem) {
+        this.filter = elem.get("filter").toString() ;
+        try {
+            this.table = elem.get("table").toString();
+        }
+        catch ( NullPointerException e)
+        {
+            this.table = null;
+        }
+        this.field = elem.get("field").toString();
+        this.operator = elem.get("operator").toString();
+        this.type = elem.get("type").toString();
+        this.values = (List<String>)elem.get("values");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FiltersStruct)) return false;
+        FiltersStruct that = (FiltersStruct) o;
+        return Objects.equals(filter, that.filter)
+                && Objects.equals(table, that.table)
+                && Objects.equals(field, that.field)
+                && Objects.equals(operator, that.operator)
+                && Objects.equals(type, that.type)
+                && ((FiltersStruct) o).getValues().containsAll(that.values);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(filter, table, field, operator, type, values);
     }
 
     @Override

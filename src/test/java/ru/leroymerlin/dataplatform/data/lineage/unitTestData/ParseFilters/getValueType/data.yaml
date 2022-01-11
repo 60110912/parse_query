@@ -1,18 +1,18 @@
 testName: getValueType
 valueType:
   - value: 20110101::text
-    ansver: text
+    answer: text
   - value: "'2020-03-01'::date"
-    ansver: tsrange
+    answer: tsrange
   - value:  "'workstation'::text"
-    ansver: text
+    answer: text
   - value: ANY ('{150,160}'::integer[])
-    ansver: numrange
+    answer: numrange
   - value: ANY ('{150,160}'::Double[])
-    ansver: numrange
+    answer: numrange
   - value: ANY ('{150,160}'::Numeric)
-    ansver: numrange
+    answer: numrange
   - value: "'2020-03-01'::Timestamp"
-    ansver: tsrange
+    answer: tsrange
   - value: "150"
-    ansver: numrange
+    answer: numrange

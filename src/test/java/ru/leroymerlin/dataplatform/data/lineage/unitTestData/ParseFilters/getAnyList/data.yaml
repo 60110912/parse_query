@@ -1,16 +1,16 @@
 testName: getAnyList
 anyList:
   - value: ANY ('{150,160}'::integer[])
-    ansver:
+    answer:
       - "150"
       - "160"
   - value: ANY ('{150,160,2091}'::integer[])
-    ansver:
+    answer:
       - "150"
       - "160"
       - "2091"
   - value: ANY ('{'TEST','tEST 1',  'tEST 3'}'::TEXT[])
-    ansver:
+    answer:
       - "'TEST'"
       - "'tEST 1'"
       - "'tEST 3'"

@@ -1,23 +1,23 @@
 splitFilters:
   - filter: ((opened_date > '2020-01-01'::date) AND (opened_date <= '2020-03-01'::date))
-    ansver:
+    answer:
       - (opened_date > '2020-01-01'::date)
       - (opened_date <= '2020-03-01'::date)
 getFilterData:
   - filter: c =  ANY ('{150,160}'::integer[])
-    ansver:
+    answer:
       values:
         - type: numrange
           value: [ 150,150 ]
         - type: numrange
           value: [ 160,160 ]
   - filter: c =  ANY ('{150,160}'::integer[])
-    ansver:
+    answer:
       values:
         - type: numrange
           value: [ 150,150 ]
         - type: numrange
           value: [ 160,160 ]
   - filter: e <> '2001-01-01'::date #Для этого делать не надо
-    ansver:
+    answer:
       values: [ ]

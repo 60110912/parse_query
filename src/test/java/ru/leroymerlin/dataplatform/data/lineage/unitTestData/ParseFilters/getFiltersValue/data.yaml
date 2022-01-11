@@ -1,0 +1,62 @@
+testName: getFiltersValue
+filterStruct:
+  - filters: ((receipt_lines_from_receipt_repository_1_prt_other.opened_date > '2020-01-01'::date) AND (receipt_lines_from_receipt_repository_1_prt_other.opened_date <= '2020-03-01'::date))
+    answer:
+      - filter: receipt_lines_from_receipt_repository_1_prt_other.opened_date > '2020-01-01'::date
+        table: receipt_lines_from_receipt_repository_1_prt_other
+        field: opened_date
+        operator: ">"
+        type: tsrange
+        values:
+          - "2020-01-01"
+      - filter: receipt_lines_from_receipt_repository_1_prt_other.opened_date <= '2020-03-01'::date
+        table: receipt_lines_from_receipt_repository_1_prt_other
+        field: opened_date
+        operator: "<="
+        type: tsrange
+        values:
+          - "2020-03-01"
+  - filters: (somet.number < 1000)
+    answer:
+      - filter: somet.number < 1000
+        table: somet
+        field: number
+        operator: "<"
+        type: numrange
+        values:
+          - "1000"
+  - filters: (t.typname IS NOT NULL)
+    answer:
+      - filter: t.typname IS NOT NULL
+        table: t
+        field: typname
+        operator: "IS"
+        type: text
+        values:
+          - "NOT NULL"
+  - filters: ((c.relkind IS NULL) OR (c.relkind = 'c'::\" char\"))
+    answer:
+      - filter: c.relkind IS NULL
+        table: c
+        field: relkind
+        operator: "IS"
+        type: text
+        values:
+          - "NULL"
+      - filter: c.relkind = 'c'::\" char\"
+        table: c
+        field: relkind
+        operator: "="
+        type: text
+        values:
+          - "c"
+  - filters: (relkind = ANY ('{150,160}'::integer[]))
+    answer:
+      - filter: relkind = ANY ('{150,160}'::integer[])
+        table: null
+        field: relkind
+        operator: "="
+        type: numrange
+        values:
+          - "150"
+          - "160"

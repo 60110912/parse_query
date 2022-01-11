@@ -7,29 +7,29 @@ public class FilterLine {
         return filter;
     }
 
-    public List<String> getAnsver() {
-        return ansver;
+    public List<String> getAnswer() {
+        return answer;
     }
 
     public String filter;
-    public List<String> ansver;
+    public List<String> answer;
 
     public FilterLine(String filter, List<String> ansver) {
         this.filter = filter;
-        this.ansver = ansver;
+        this.answer = ansver;
     }
     public FilterLine() { }
     public void setFilter(String filter) {
         this.filter = filter;
     }
-    public void setAnsver(List<String> ansver) {
-        this.ansver = ansver;
+    public void setAnswer(List<String> answer) {
+        this.answer = answer;
     }
     @Override
     public String toString() {
         return "FilterLine{" +
                 "filter='" + filter + '\'' +
-                ", ansver=" + ansver +
+                ", ansver=" + answer +
                 '}';
     }
 }

@@ -128,7 +128,7 @@ public class ParseFilters {
                     else {
                         clearValue = item;
                     }
-                    fieldsFilter.addFilterValues(clearValue);
+                    fieldsFilter.addFilterValues(ParseFilters.unTypingValues(clearValue));
                 }
             }
             else {
@@ -139,7 +139,7 @@ public class ParseFilters {
                 else {
                     clearValue = valuesString;
                 }
-                fieldsFilter.addFilterValues(clearValue);
+                fieldsFilter.addFilterValues(ParseFilters.unTypingValues(clearValue));
 
             }
             fieldsFilter.setType(valueType);
@@ -166,9 +166,14 @@ public class ParseFilters {
         // "alias"."value" operator value
         HashMap<String, String> result = new HashMap<>();
         List<String> regList = new ArrayList<>();
-        regList.add("^\\W*(?<table>\\w+)\\W*\\.\\W*?(?<field>\\w+)\\W*(?<operator>[<>=!]+|IS)\\W(?<values>.*)$");
+        regList.add("^\\W*(?<table>\\w+)\\W*\\.\\W*?(?<field>\\w+)\\W*?(?<operator>[<>=!]+|IS)\\W(?<values>.*)$");
         regList.add("^\\W*(?<field>\\w+)\\W*?(?<operator>[<>=!]+|IS)\\W(?<values>.*)$");
-
+        logger.logp(
+                Level.INFO,
+                this.getClass().getCanonicalName(),
+                "parseFiltersStruct",
+                "Source String=" + str
+        );
         for (String s : regList) {
             Pattern pattern = Pattern.compile(s, Pattern.CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(str);
@@ -182,8 +187,8 @@ public class ParseFilters {
                 result.put("field", matcher.group("field").trim());
                 if (matcher.groupCount() == 4) {
                     result.put("table", matcher.group("table").trim());
-                }
-                ;
+                };
+
                 result.put("operator", matcher.group("operator").trim());
                 result.put("values", matcher.group("values").trim());
                 logger.logp(
@@ -222,6 +227,12 @@ public class ParseFilters {
         }
         return valueType;
     }
+
+    /**
+     * Function get values from ANY array struct.
+     * @param str - string with Any array.
+     * @return list values
+     */
     public static List<String> getAnyList(String str){
         String regStr = "\\\'\\{(.*)\\}\\\'";
         Pattern pattern = Pattern.compile(regStr, Pattern.CASE_INSENSITIVE);
@@ -231,5 +242,20 @@ public class ParseFilters {
             return result;
         }
         return null;
+    }
+
+    public static String unTypingValues(String str) {
+        List<String> regList = new ArrayList<>();
+        regList.add("'(?<value>.*)'::");
+        regList.add("\\s*(?<value>.*)::");
+
+        for (String s : regList) {
+            Pattern pattern = Pattern.compile(s);
+            Matcher matcher = pattern.matcher(str);
+            while (matcher.find()) {
+                return matcher.group("value");
+            }
+        }
+        return str;
     }
 }
