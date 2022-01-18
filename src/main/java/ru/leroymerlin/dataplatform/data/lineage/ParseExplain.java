@@ -52,32 +52,41 @@ public class ParseExplain {
         logger.logp(Level.INFO, "test", "test", "Reverse get plans" );
         for(int i = plans.size(); i-- > 0;) {
             net.minidev.json.JSONArray CurrentElement= plans.get(i);
-            logger.logp(Level.INFO, "test", "test",  CurrentElement.toString() );
-            // Добавить цикл обработки данных по каждому индексу.
-            LinkedHashMap TableRelation = JsonPath.read(
-                    CurrentElement.get(0),
-                    "$.['Alias','Schema' , 'Relation Name', 'Filter']"
-            );
-            try {
-                this.tableDict.put(TableRelation.get("Alias").toString(), (HashMap<String,String>) TableRelation);
-                currExplain.addTabel_explain((HashMap<String,String>) TableRelation);
+            for(int j=0; j< CurrentElement.size(); j++) {
+                logger.logp(Level.INFO, "test", "test", CurrentElement.toString());
+                // Добавить цикл обработки данных по каждому индексу.
+                LinkedHashMap TableRelation = JsonPath.read(
+                        CurrentElement.get(j),
+                        "$.['Alias','Schema' , 'Relation Name', 'Filter']"
+                );
+                try {
+                    this.tableDict.put(TableRelation.get("Alias").toString(), (HashMap<String, String>) TableRelation);
+                    currExplain.addTabel_explain((HashMap<String, String>) TableRelation);
+                } catch (NullPointerException e) {
+                }
+                try {
+                    String currFilter = TableRelation.get("Filter").toString();
+                    ParseFilters filterValue = new ParseFilters(currFilter);
+                    QueryFilters toResult = new QueryFilters();
+                    toResult.setFilters(currFilter);
+                    toResult.setFilters_value(filterValue.getFiltersValue());
+
+                    currExplain.addTabel_explain((HashMap<String, String>) TableRelation);
+                    currExplain.setQuery_text(object.get("Query Text").toString());
+//                toResult = setTableName(toResult);
+                    setTableName(toResult);
+                    currExplain.addQuery_filters(toResult);
+                    logger.logp(Level.INFO, "test", "test", CurrentElement.toString());
+                } catch (NullPointerException e) {}
+
+                logger.logp(Level.INFO, "test", "list hash map", TableRelation.toString());
             }
-            catch ( NullPointerException e){}
-            try {
-                String currFilter = TableRelation.get("Filter").toString();
-                ParseFilters filterValue = new ParseFilters(currFilter);
-                QueryFilters toResult = new QueryFilters();
-                toResult.setFilters(currFilter);
-                toResult.setFilters_value(filterValue.getFiltersValue());
-                currExplain.addTabel_explain((HashMap<String,String>) TableRelation);
-            }
-            catch ( NullPointerException e){}
-            
-            logger.logp(Level.INFO, "test", "list hash map", TableRelation.toString());
 
         }
 //        logger.logp(Level.INFO, "test", "list hash map", currExplain.toString());
-        return object;
+        JSONObject result = new JSONObject(currExplain);
+        logger.logp(Level.INFO, "test", "result=", result.toString());
+        return result;
 
     }
 
@@ -93,6 +102,18 @@ public class ParseExplain {
     public ParseExplain() {
     }
 
+    public void setTableName(QueryFilters elem){
+        for (FiltersStruct item : elem.getFilters_value()){
+            String alias = item.getTable();
+            item.setTable(
+                    this.tableDict.get(alias).get("Relation Name")
+            );
+            item.setSchema(
+                    this.tableDict.get(alias).get("Schema")
+            );
+
+        }
+    }
     public static void main(String[] args) throws java.io.FileNotFoundException, net.sf.jsqlparser.JSQLParserException {
         String resourceName = "C:\\Users\\60110912\\IdeaProjects\\parse_query\\src\\main\\java\\ru\\leroymerlin\\dataplatform\\data\\lineage\\test.json";
 //        List<String> test = new ArrayList<>();

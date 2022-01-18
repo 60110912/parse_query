@@ -13,6 +13,16 @@ public class FiltersStruct {
     private String field;
     private String operator;
     private String type;
+    private String schema;
+
+    public String getSchema() {
+        return schema;
+    }
+
+    public void setSchema(String schema) {
+        this.schema = schema;
+    }
+
     private List<String> values;
     public String getFilter() {
         return filter;
@@ -69,16 +79,19 @@ public class FiltersStruct {
         this.operator = operator;
         this.type = type;
         this.values = values;
+        this.schema = "public";
     }
 
     public FiltersStruct() {
         this.values = new LinkedList<>();
+        this.schema = "public";
     }
     public void addFilterValues(String elem)
     {
         this.values.add(elem);
     }
     public void setValuesFromHashmap (HashMap elem){
+        this.schema = "public";
         this.field = elem.get("field").toString();
         try {
             this.table = elem.get("table").toString();
@@ -102,6 +115,7 @@ public class FiltersStruct {
         this.operator = elem.get("operator").toString();
         this.type = elem.get("type").toString();
         this.values = (List<String>)elem.get("values");
+        this.schema = "public";
     }
 
     @Override
@@ -114,12 +128,13 @@ public class FiltersStruct {
                 && Objects.equals(field, that.field)
                 && Objects.equals(operator, that.operator)
                 && Objects.equals(type, that.type)
+                && Objects.equals(type, that.type)
                 && ((FiltersStruct) o).getValues().containsAll(that.values);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(filter, table, field, operator, type, values);
+        return Objects.hash(filter, table, field, operator, type, values, schema);
     }
 
     @Override
@@ -131,6 +146,7 @@ public class FiltersStruct {
                 ", operator='" + operator + '\'' +
                 ", type='" + type + '\'' +
                 ", values=" + values +
+                ", schema=" + schema +
                 '}';
     }
 }

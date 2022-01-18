@@ -23,23 +23,23 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class ParseExplainTest extends TestCase {
     public static Logger logger = Logger.getLogger( ParseExplainTest.class.getName());
-//    @Test
-//    public void testConvertStringToJson() {
-//        String fileName = "src/test/java/ru/leroymerlin/dataplatform/data/lineage/unitTestData/ParseExplain/convertStringToJson/test.txt";
-//        try (Scanner scanner = new Scanner(new File(fileName))) {
-//            while (scanner.hasNext()){
-//                try {
-//                    ParseExplain.convertStringToJson(scanner.nextLine());
-//                    assertTrue(true);
-//                } catch (JSONException e){
-//                    assertTrue(false);
-//                    e.printStackTrace();
-//                }
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    @Test
+    public void testConvertStringToJson() {
+        String fileName = "src/test/java/ru/leroymerlin/dataplatform/data/lineage/unitTestData/ParseExplain/convertStringToJson/test.txt";
+        try (Scanner scanner = new Scanner(new File(fileName))) {
+            while (scanner.hasNext()){
+                try {
+                    ParseExplain.convertStringToJson(scanner.nextLine());
+                    assertTrue(true);
+                } catch (JSONException e){
+                    assertTrue(false);
+                    e.printStackTrace();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     @Test
     public void testGetExplainObject() {
         String fileName = "src/test/java/ru/leroymerlin/dataplatform/data/lineage/unitTestData/ParseExplain/convertStringToJson/test.txt";
@@ -52,9 +52,14 @@ public class ParseExplainTest extends TestCase {
                         "testGetExplainObject",
                         "elem:"+ currentElem.toString()
                 );
-                ParseExplain currentExplain =  new ParseExplain();
-                JSONObject test = currentExplain.getExplainObject(currentElem);
-
+                try {
+                    ParseExplain currentExplain = new ParseExplain();
+                    JSONObject explain = currentExplain.getExplainObject(currentElem);
+                    assertTrue(true);
+                } catch (JSONException e){
+                    assertTrue(false);
+                    e.printStackTrace();
+                }
             }
         } catch (IOException | JSQLParserException e) {
             e.printStackTrace();

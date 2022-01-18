@@ -11,11 +11,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ExplainObject {
+
+
     private UUID query_id;
     private List<HashMap<String,String>> tables_sql;
     private List<HashMap<String,String>> table_explain;
     private String query_text;
-    private QueryFilters query_filters;
+    private List<QueryFilters> query_filters;
+
+    public UUID getQuery_id() {
+        return query_id;
+    }
 
     public List<HashMap<String,String>> getTables_sql() {
         return tables_sql;
@@ -41,11 +47,11 @@ public class ExplainObject {
         this.query_text = query_text;
     }
 
-    public QueryFilters getQuery_filters() {
+    public List<QueryFilters> getQuery_filters() {
         return query_filters;
     }
 
-    public void setQuery_filters(QueryFilters query_filters) {
+    public void setQuery_filters(List<QueryFilters> query_filters) {
         this.query_filters = query_filters;
     }
 
@@ -70,11 +76,16 @@ public class ExplainObject {
         this.table_explain.add(result);
     }
 
+    public void addQuery_filters(QueryFilters item){
+        this.query_filters.add(item);
+    }
+
 
     public ExplainObject() {
         this.query_id = UUID.randomUUID();
         this.tables_sql = new ArrayList<>();
         this.table_explain = new ArrayList<>() ;
+        this.query_filters = new ArrayList<>();
     }
 
     @Override

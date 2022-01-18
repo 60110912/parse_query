@@ -27,7 +27,7 @@ public class QueryFilters {
     public String toString() {
         return "QueryFilters{" +
                 "filters='" + filters + '\'' +
-                ", filters_value=" + filters_value +
+                ", filters_value=" + filters_value.toString() +
                 '}';
     }
 }

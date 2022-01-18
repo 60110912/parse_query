@@ -29,7 +29,7 @@ public class TestIdea {
                 }
             });
         }
-
+        Expression expr_2 = CCJSqlParserUtil.parseExpression("((hi42_conquest_1_prt_month_202002.dat_vte >= '2020-01-01'::date) AND (hi42_conquest_1_prt_month_202002.dat_vte < '2020-05-01'::date) AND ((date_trunc('month'::text, (hi42_conquest_1_prt_month_202002.dat_vte)::timestamp with time zone))::date = '2020-01-01'::date))");
         System.out.println("map " + map);
     }
 }
