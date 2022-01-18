@@ -2,10 +2,7 @@ package ru.leroymerlin.dataplatform.data.lineage;
 
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,7 +12,7 @@ public class ExplainObject {
 
     private UUID query_id;
     private List<HashMap<String,String>> tables_sql;
-    private List<HashMap<String,String>> table_explain;
+    private HashSet<HashMap<String,String>> table_explain;
     private String query_text;
     private List<QueryFilters> query_filters;
 
@@ -31,11 +28,11 @@ public class ExplainObject {
         this.tables_sql = tables_sql;
     }
 
-    public List<HashMap<String,String>> getTable_explain() {
+    public HashSet<HashMap<String,String>> getTable_explain() {
         return table_explain;
     }
 
-    public void setTable_explain(List<HashMap<String,String>> table_explain) {
+    public void setTable_explain(HashSet<HashMap<String,String>> table_explain) {
         this.table_explain = table_explain;
     }
 
@@ -70,10 +67,18 @@ public class ExplainObject {
         this.tables_sql.add(result);
     }
     public  void addTabel_explain(HashMap<String,String> map){
-        HashMap<String, String> result = new HashMap<>();
-        result.put("schema", map.get("Schema"));
-        result.put("table" , map.get("Relation Name"));
-        this.table_explain.add(result);
+        if(map.size() > 0) {
+            HashMap<String, String> result = new HashMap<>();
+            if(map.get("Schema") != null) {
+                result.put("schema", map.get("Schema"));
+            };
+            if (map.get("Relation Name") != null) {
+                result.put("table", map.get("Relation Name"));
+            }
+            if (result.size() > 0) {
+                this.table_explain.add(result);
+            }
+        }
     }
 
     public void addQuery_filters(QueryFilters item){
@@ -84,7 +89,7 @@ public class ExplainObject {
     public ExplainObject() {
         this.query_id = UUID.randomUUID();
         this.tables_sql = new ArrayList<>();
-        this.table_explain = new ArrayList<>() ;
+        this.table_explain = new HashSet<>() ;
         this.query_filters = new ArrayList<>();
     }
 

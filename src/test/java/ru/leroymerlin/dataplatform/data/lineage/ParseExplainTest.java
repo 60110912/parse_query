@@ -8,18 +8,11 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Stream;
 
-
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class ParseExplainTest extends TestCase {
     public static Logger logger = Logger.getLogger( ParseExplainTest.class.getName());
@@ -55,6 +48,12 @@ public class ParseExplainTest extends TestCase {
                 try {
                     ParseExplain currentExplain = new ParseExplain();
                     JSONObject explain = currentExplain.getExplainObject(currentElem);
+                    logger.logp(
+                            Level.INFO,
+                            this.getClass().getCanonicalName(),
+                            "testGetExplainObject",
+                            "explain:"+ explain.toString()
+                    );
                     assertTrue(true);
                 } catch (JSONException e){
                     assertTrue(false);
